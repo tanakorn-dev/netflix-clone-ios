@@ -7,7 +7,7 @@ struct ProfilePickerView: View {
     @State private var backdropOpacity: Double = 1.0
 
     private let backdropMovies = MockData.backdropMovies
-    private let backdropTimer = Timer.publish(every: 4, on: .main, in: .common).autoconnect()
+    private let backdropTimer = Timer.publish(every: 8, on: .main, in: .common).autoconnect()
 
     let columns = [
         GridItem(.flexible()),
@@ -20,26 +20,35 @@ struct ProfilePickerView: View {
             MainTabView()
                 .transition(.netflixFade)
         } else {
-            ZStack {
-                backdropImage
+            ZStack(alignment: .bottom) {
+                // Layer 1: Backdrop + gradient — full screen canvas
+                GeometryReader { geo in
+                    let backdropHeight = geo.size.height * 0.75
 
-                // Bottom gradient overlay
-                VStack(spacing: 0) {
-                    Spacer()
-                    LinearGradient(
-                        colors: [.clear, Color.black.opacity(0.85), Color.black],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                    .frame(height: 480)
+                    ZStack {
+                        Color.black
+
+                        // Backdrop anchored to top, 80% height
+                        backdropImage
+                            .frame(width: geo.size.width, height: backdropHeight)
+                            .clipped()
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+
+                        // Gradient fading into black at bottom of backdrop
+                        LinearGradient(
+                            colors: [.clear, Color.black.opacity(0.75), Color.black],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                        .frame(height: backdropHeight * 0.55)
+                        .offset(y: backdropHeight * 0.45)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                    }
                 }
                 .ignoresSafeArea()
 
-                VStack(spacing: 0) {
-                    Spacer()
-                    pickerContent
-                }
-                .ignoresSafeArea(edges: .bottom)
+                // Layer 2: Profile picker — free-floating, pinned to bottom, never clipped
+                pickerContent
             }
             .onAppear {
                 withAnimation(NetflixAnimation.spring) {
@@ -55,7 +64,7 @@ struct ProfilePickerView: View {
     // MARK: - Backdrop
     private var backdropImage: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
+            Color(hex: "1a1a2e")
 
             if !backdropMovies.isEmpty {
                 let movie = backdropMovies[backdropIndex]
@@ -71,7 +80,6 @@ struct ProfilePickerView: View {
                         Color(hex: "1a1a2e")
                     }
                 }
-                .ignoresSafeArea()
                 .opacity(backdropOpacity)
                 .animation(.easeInOut(duration: 0.8), value: backdropOpacity)
             }
@@ -94,34 +102,44 @@ struct ProfilePickerView: View {
 
     // MARK: - Picker content
     private var pickerContent: some View {
-        VStack(spacing: NetflixTheme.Spacing.lg) {
-            Text("Choose Your Profile")
-                .font(.system(size: 17, weight: .medium))
-                .foregroundColor(NetflixTheme.Colors.textSecondary)
-                .opacity(avatarsVisible ? 1 : 0)
+        GeometryReader { geo in
+            let cellSize: CGFloat = 80
+            let gap = (geo.size.width - cellSize * 3) / 4  // equal gaps: left | cell | gap | cell | gap | cell | right
 
-            LazyVGrid(columns: columns, spacing: NetflixTheme.Spacing.lg) {
-                ForEach(Array(Profile.samples.prefix(3).enumerated()), id: \.element.id) { index, profile in
-                    profileCell(profile: profile, index: index)
-                }
-            }
-            .padding(.horizontal, NetflixTheme.Spacing.xl)
+            VStack(spacing: gap * 0.5) {
+                Text("Choose Your Profile")
+                    .font(.system(size: 17, weight: .medium))
+                    .foregroundColor(NetflixTheme.Colors.textSecondary)
+                    .opacity(avatarsVisible ? 1 : 0)
+                    .padding(.bottom, 10 - gap * 0.5)
 
-            LazyVGrid(columns: columns, spacing: NetflixTheme.Spacing.lg) {
-                if Profile.samples.count > 3 {
-                    profileCell(profile: Profile.samples[3], index: 3)
+                // Row 1
+                HStack(spacing: gap) {
+                    ForEach(Array(Profile.samples.prefix(3).enumerated()), id: \.element.id) { index, profile in
+                        profileCell(profile: profile, index: index, size: cellSize)
+                    }
                 }
-                actionCell(icon: "plus",   label: "Add")  {}
-                actionCell(icon: "pencil", label: "Edit") {}
+                .padding(.horizontal, gap)
+
+                // Row 2
+                HStack(spacing: gap) {
+                    if Profile.samples.count > 3 {
+                        profileCell(profile: Profile.samples[3], index: 3, size: cellSize)
+                    }
+                    actionCell(icon: "plus",   label: "Add",  size: cellSize) {}
+                    actionCell(icon: "pencil", label: "Edit", size: cellSize) {}
+                }
+                .padding(.horizontal, gap)
             }
-            .padding(.horizontal, NetflixTheme.Spacing.xl)
+            .frame(width: geo.size.width, alignment: .bottom)
+            .frame(maxHeight: .infinity, alignment: .bottom)
+            .padding(.bottom, 0)
         }
-        .padding(.bottom, 52)
-        .padding(.top, NetflixTheme.Spacing.md)
+        .frame(height: 300)
     }
 
     // MARK: - Profile cell
-    private func profileCell(profile: Profile, index: Int) -> some View {
+    private func profileCell(profile: Profile, index: Int, size: CGFloat) -> some View {
         Button {
             withAnimation(NetflixAnimation.spring) {
                 router.selectProfile(profile)
@@ -129,17 +147,18 @@ struct ProfilePickerView: View {
         } label: {
             VStack(spacing: NetflixTheme.Spacing.sm) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 12)
+                    RoundedRectangle(cornerRadius: size * 0.16)
                         .fill(profile.avatarColor)
-                        .aspectRatio(1, contentMode: .fit)
+                        .frame(width: size, height: size)
 
-                    profileIcon(for: profile)
+                    profileIcon(for: profile, size: size)
 
                     if profile.isLocked {
-                        RoundedRectangle(cornerRadius: 12)
+                        RoundedRectangle(cornerRadius: size * 0.16)
                             .fill(Color.black.opacity(0.55))
+                            .frame(width: size, height: size)
                         Image(systemName: "lock.fill")
-                            .font(.system(size: 22))
+                            .font(.system(size: size * 0.2))
                             .foregroundColor(.white)
                     }
 
@@ -149,7 +168,7 @@ struct ProfilePickerView: View {
                             HStack {
                                 Spacer()
                                 Text("KIDS")
-                                    .font(.system(size: 8, weight: .black))
+                                    .font(.system(size: max(size * 0.05, 8), weight: .black))
                                     .foregroundColor(.white)
                                     .padding(.horizontal, 4)
                                     .padding(.vertical, 2)
@@ -158,11 +177,13 @@ struct ProfilePickerView: View {
                                     .padding(6)
                             }
                         }
+                        .frame(width: size, height: size)
                     }
                 }
+                .frame(width: size, height: size)
 
                 Text(profile.name)
-                    .font(.system(size: 13, weight: .medium))
+                    .font(.system(size: 13, weight: .bold))
                     .foregroundColor(NetflixTheme.Colors.textSecondary)
                     .lineLimit(1)
             }
@@ -177,21 +198,22 @@ struct ProfilePickerView: View {
     }
 
     // MARK: - Add / Edit cell
-    private func actionCell(icon: String, label: String, action: @escaping () -> Void) -> some View {
+    private func actionCell(icon: String, label: String, size: CGFloat, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             VStack(spacing: NetflixTheme.Spacing.sm) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 12)
+                    RoundedRectangle(cornerRadius: size * 0.16)
                         .fill(Color.white.opacity(0.12))
-                        .aspectRatio(1, contentMode: .fit)
+                        .frame(width: size, height: size)
                         .overlay(
-                            RoundedRectangle(cornerRadius: 12)
+                            RoundedRectangle(cornerRadius: size * 0.16)
                                 .stroke(Color.white.opacity(0.25), lineWidth: 1)
                         )
                     Image(systemName: icon)
-                        .font(.system(size: 28, weight: .light))
+                        .font(.system(size: size * 0.3, weight: .light))
                         .foregroundColor(NetflixTheme.Colors.textPrimary)
                 }
+                .frame(width: size, height: size)
                 Text(label)
                     .font(.system(size: 13, weight: .medium))
                     .foregroundColor(NetflixTheme.Colors.textSecondary)
@@ -204,27 +226,28 @@ struct ProfilePickerView: View {
 
     // MARK: - Profile icon
     @ViewBuilder
-    private func profileIcon(for profile: Profile) -> some View {
+    private func profileIcon(for profile: Profile, size: CGFloat) -> some View {
+        let iconSize = size * 0.4
         switch profile.name {
         case "Tanakorn":
             Image(systemName: "person.fill")
-                .font(.system(size: 36))
+                .font(.system(size: iconSize))
                 .foregroundColor(.white.opacity(0.9))
         case "Aummy":
             Image(systemName: "face.smiling.fill")
-                .font(.system(size: 34))
+                .font(.system(size: iconSize))
                 .foregroundColor(.white.opacity(0.9))
         case "Bill":
             Image(systemName: "theatermasks.fill")
-                .font(.system(size: 32))
+                .font(.system(size: iconSize * 0.9))
                 .foregroundColor(.white.opacity(0.9))
         case "Sakda":
             Image(systemName: "star.fill")
-                .font(.system(size: 32))
+                .font(.system(size: iconSize * 0.9))
                 .foregroundColor(.white.opacity(0.9))
         default:
             Image(systemName: "person.fill")
-                .font(.system(size: 36))
+                .font(.system(size: iconSize))
                 .foregroundColor(.white.opacity(0.9))
         }
     }
