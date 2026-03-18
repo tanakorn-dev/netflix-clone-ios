@@ -27,9 +27,9 @@ struct Profile: Identifiable {
 // MARK: - Sample Profiles
 extension Profile {
     static let samples: [Profile] = [
-        Profile(name: "Main",   avatarColor: .blue),
-        Profile(name: "Kids",   avatarColor: .green,  isKidsProfile: true),
-        Profile(name: "Guest",  avatarColor: .purple, isLocked: true),
-        Profile(name: "Add",    avatarColor: .gray)
+        Profile(name: "Tanakorn", avatarColor: Color(hex: "3498db")),
+        Profile(name: "Aummy",   avatarColor: Color(hex: "1a5276")),
+        Profile(name: "Bill",    avatarColor: Color(hex: "c0392b")),
+        Profile(name: "Sakda",   avatarColor: Color(hex: "2980b9"))
     ]
 }

@@ -47,16 +47,19 @@ struct Movie: Identifiable, Hashable {
 // MARK: - Genre
 enum Genre: String, CaseIterable, Identifiable {
     var id: String { rawValue }
-    case action     = "Action"
-    case comedy     = "Comedy"
-    case drama      = "Drama"
-    case horror     = "Horror"
-    case sciFi      = "Sci-Fi"
-    case thriller   = "Thriller"
-    case romance    = "Romance"
-    case animation  = "Animation"
+    case action      = "Action"
+    case adventure   = "Adventure"
+    case animation   = "Animation"
+    case comedy      = "Comedy"
+    case crime       = "Crime"
     case documentary = "Documentary"
-    case crime      = "Crime"
+    case drama       = "Drama"
+    case family      = "Family"
+    case horror      = "Horror"
+    case mystery     = "Mystery"
+    case romance     = "Romance"
+    case sciFi       = "Sci-Fi"
+    case thriller    = "Thriller"
 }
 
 // MARK: - Content Row

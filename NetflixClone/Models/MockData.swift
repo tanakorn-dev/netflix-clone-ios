@@ -1,7 +1,6 @@
 import Foundation
 
 // MARK: - Mock Data
-// Replace thumbnailURL / backdropURL with real image URLs or local assets later
 enum MockData {
 
     static let movies: [Movie] = [
@@ -67,8 +66,48 @@ enum MockData {
               matchPercentage: 88,
               genres: [.romance, .drama],
               cast: ["Phoebe Dynevor", "Regé-Jean Page"],
-              isNetflixOriginal: true, rating: "TV-MA")
+              isNetflixOriginal: true, rating: "TV-MA"),
+
+        // MARK: New backdrop movies
+        Movie(title: "Project Hail Mary",
+              description: "Science teacher Ryland Grace wakes up on a spaceship light years from home with no recollection of who he is or how he got there. As his memory returns, he begins to uncover his mission: solve the riddle of the mysterious substance causing the sun to die out. He must call on his scientific knowledge and unorthodox ideas to save everything on Earth from extinction… but an unexpected friendship means he may not have to do it alone.",
+              backdropURL: "https://image.tmdb.org/t/p/w600_and_h900_face/cCx1m530ph5FmtabVVUpUchEmhe.jpg",
+              year: 2026, duration: "2h 37m",
+              matchPercentage: 97,
+              genres: [.sciFi, .adventure, .mystery],
+              cast: ["Ryan Gosling"],
+              isNetflixOriginal: false, rating: "PG-13"),
+
+        Movie(title: "One Battle After Another",
+              description: "Washed-up revolutionary Bob exists in a state of stoned paranoia, surviving off-grid with his spirited, self-reliant daughter, Willa. When his evil nemesis resurfaces after 16 years and she goes missing, the former radical scrambles to find her, father and daughter both battling the consequences of his past.",
+              backdropURL: "https://www.themoviedb.org/t/p/w600_and_h900_face/lbBWwxBht4JFP5PsuJ5onpMqugW.jpg",
+              year: 2025, duration: "2h 42m",
+              matchPercentage: 89,
+              genres: [.thriller, .crime, .comedy],
+              cast: ["Brad Pitt"],
+              isNetflixOriginal: false, rating: "R"),
+
+        Movie(title: "Zootopia 2",
+              description: "After cracking the biggest case in Zootopia's history, rookie cops Judy Hopps and Nick Wilde find themselves on the twisting trail of a great mystery when Gary De'Snake arrives and turns the animal metropolis upside down.",
+              backdropURL: "https://www.themoviedb.org/t/p/w600_and_h900_face/oJ7g2CifqpStmoYQyaLQgEU32qO.jpg",
+              year: 2025, duration: "1h 48m",
+              matchPercentage: 93,
+              genres: [.animation, .comedy, .adventure, .family, .mystery],
+              cast: ["Ginnifer Goodwin", "Jason Bateman"],
+              isNetflixOriginal: false, rating: "PG"),
+
+        Movie(title: "Hoppers",
+              description: "Scientists have discovered how to 'hop' human consciousness into lifelike robotic animals, allowing people to communicate with animals as animals. Animal lover Mabel seizes an opportunity to use the technology, uncovering mysteries within the animal world beyond anything she could have imagined.",
+              backdropURL: "https://www.themoviedb.org/t/p/w600_and_h900_face/xjtWQ2CL1mpmMNwuU5HeS4Iuwuu.jpg",
+              year: 2026, duration: "1h 45m",
+              matchPercentage: 91,
+              genres: [.animation, .family, .sciFi, .comedy],
+              cast: ["TBA"],
+              isNetflixOriginal: false, rating: "PG"),
     ]
+
+    // MARK: - Backdrop movies (used in ProfilePickerView cycling backdrop)
+    static let backdropMovies: [Movie] = movies.filter { !$0.backdropURL.isEmpty }
 
     // MARK: - Content Rows
     static let homeRows: [ContentRow] = [
