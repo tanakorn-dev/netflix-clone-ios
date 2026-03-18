@@ -1,34 +1,36 @@
 import SwiftUI
 
 struct MainTabView: View {
-    @State private var selectedTab = 0
+    @EnvironmentObject var router: AppRouter
 
     var body: some View {
         ZStack(alignment: .bottom) {
             NetflixTheme.Colors.background.ignoresSafeArea()
 
-            TabView(selection: $selectedTab) {
-                HomeView()
-                    .tag(0)
-                SearchView()
-                    .tag(1)
-                DownloadsView()
-                    .tag(2)
+            TabView(selection: $router.selectedTab) {
+                HomeView().tag(0)
+                SearchView().tag(1)
+                DownloadsView().tag(2)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
 
-            // Custom Tab Bar — will be built in Phase 3
-            CustomTabBar(selectedTab: $selectedTab)
+            CustomTabBar()
         }
         .ignoresSafeArea(edges: .bottom)
+        // Full-screen player overlay
+        .fullScreenCover(item: $router.playerMovie) { movie in
+            VideoPlayerView(movie: movie)
+                .environmentObject(router)
+        }
     }
 }
 
 struct CustomTabBar: View {
-    @Binding var selectedTab: Int
+    @EnvironmentObject var router: AppRouter
+
     private let items: [(icon: String, label: String)] = [
-        ("house.fill",       "Home"),
-        ("magnifyingglass",  "Search"),
+        ("house.fill",             "Home"),
+        ("magnifyingglass",        "Search"),
         ("arrow.down.circle.fill", "Downloads")
     ]
 
@@ -37,17 +39,21 @@ struct CustomTabBar: View {
             ForEach(items.indices, id: \.self) { i in
                 Spacer()
                 Button {
-                    selectedTab = i
+                    router.switchTab(i)
                 } label: {
                     VStack(spacing: 4) {
                         Image(systemName: items[i].icon)
-                            .font(.system(size: 22))
+                            .font(.system(size: router.selectedTab == i ? 24 : 22))
+                            .scaleEffect(router.selectedTab == i ? 1.1 : 1.0)
                         Text(items[i].label)
                             .font(NetflixTheme.Typography.caption)
                     }
-                    .foregroundColor(selectedTab == i
-                        ? NetflixTheme.Colors.tabActive
-                        : NetflixTheme.Colors.tabInactive)
+                    .foregroundColor(
+                        router.selectedTab == i
+                            ? NetflixTheme.Colors.tabActive
+                            : NetflixTheme.Colors.tabInactive
+                    )
+                    .animation(NetflixAnimation.tabBounce, value: router.selectedTab)
                 }
                 Spacer()
             }
@@ -61,4 +67,7 @@ struct CustomTabBar: View {
     }
 }
 
-#Preview { MainTabView() }
+#Preview {
+    MainTabView().environmentObject(AppRouter())
+}
+
