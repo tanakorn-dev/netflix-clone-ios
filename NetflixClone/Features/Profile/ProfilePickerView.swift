@@ -107,7 +107,7 @@ struct ProfilePickerView: View {
 
             VStack(spacing: gap * 0.5) {
                 Text("Choose Your Profile")
-                    .font(.system(size: 17, weight: .medium))
+                    .font(NetflixTheme.Typography.medium(17))
                     .foregroundColor(NetflixTheme.Colors.textSecondary)
                     .opacity(avatarsVisible ? 1 : 0)
                     .padding(.bottom, 10 - gap * 0.5)
@@ -167,7 +167,7 @@ struct ProfilePickerView: View {
                             HStack {
                                 Spacer()
                                 Text("KIDS")
-                                    .font(.system(size: max(size * 0.05, 8), weight: .black))
+                                    .font(NetflixTheme.Typography.black(max(size * 0.05, 8)))
                                     .foregroundColor(.white)
                                     .padding(.horizontal, 4)
                                     .padding(.vertical, 2)
@@ -182,7 +182,7 @@ struct ProfilePickerView: View {
                 .frame(width: size, height: size)
 
                 Text(profile.name)
-                    .font(.system(size: 13, weight: .bold))
+                    .font(NetflixTheme.Typography.bold(13))
                     .foregroundColor(NetflixTheme.Colors.textSecondary)
                     .lineLimit(1)
             }
@@ -214,7 +214,7 @@ struct ProfilePickerView: View {
                 }
                 .frame(width: size, height: size)
                 Text(label)
-                    .font(.system(size: 13, weight: .medium))
+                    .font(NetflixTheme.Typography.medium(13))
                     .foregroundColor(NetflixTheme.Colors.textSecondary)
             }
         }

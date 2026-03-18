@@ -20,8 +20,7 @@ struct SplashView: View {
 
     private var splashContent: some View {
         Text("N")
-            .font(.system(size: 90, weight: .black))
-            .italic()
+            .font(NetflixTheme.Typography.netflixLogoSize(90))
             .foregroundColor(NetflixTheme.Colors.netflixRed)
             .scaleEffect(scale)
             .opacity(opacity)
@@ -44,4 +43,3 @@ struct SplashView: View {
 #Preview {
     SplashView().environmentObject(AppRouter())
 }
-

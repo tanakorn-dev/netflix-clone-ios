@@ -16,116 +16,171 @@ struct AuthView: View {
 
 struct SignInView: View {
     @EnvironmentObject var router: AppRouter
-    @State private var email    = ""
-    @State private var password = ""
-    @State private var showPassword = false
+    @State private var email = ""
     @State private var isLoading = false
-    @State private var fieldsVisible = false
+    @State private var contentVisible = false
+    @State private var getHelpExpanded = false
 
     var body: some View {
-        VStack(spacing: NetflixTheme.Spacing.lg) {
-            Spacer()
+        ZStack {
+            LinearGradient(
+                stops: [
+                    .init(color: Color(hex: "3d0000"), location: 0.0),
+                    .init(color: Color(hex: "1a0000"), location: 0.3),
+                    .init(color: Color.black, location: 0.5),
+                    .init(color: Color.black, location: 1.0)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
 
-            // Logo
-            Text("N")
-                .font(.system(size: 60, weight: .black))
-                .italic()
-                .foregroundColor(NetflixTheme.Colors.netflixRed)
+            VStack(alignment: .leading, spacing: 0) {
+                navBar
 
-            Text("Sign In")
-                .netflixText(.heroTitle)
-                .padding(.bottom, NetflixTheme.Spacing.sm)
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Enter your info to sign in")
+                        .font(NetflixTheme.Typography.bold(28))
+                        .foregroundColor(NetflixTheme.Colors.textPrimary)
+                        .padding(.top, NetflixTheme.Spacing.xl)
+                        .padding(.bottom, 40)
 
-            // Fields
-            VStack(spacing: NetflixTheme.Spacing.sm) {
-                netflixTextField("Email or phone number", text: $email)
-                passwordField
-            }
-            .opacity(fieldsVisible ? 1 : 0)
-            .offset(y: fieldsVisible ? 0 : 20)
-
-            // Sign in button
-            Button {
-                isLoading = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                    isLoading = false
-                    router.signIn()
-                }
-            } label: {
-                ZStack {
-                    Text("Sign In")
-                        .opacity(isLoading ? 0 : 1)
-                    if isLoading {
-                        ProgressView()
-                            .tint(.black)
+                    VStack(spacing: NetflixTheme.Spacing.md) {
+                        emailField
+                        continueButton
                     }
+
+                    getHelpRow
+
+                    captchaFooter
                 }
+                .padding(.horizontal, NetflixTheme.Spacing.lg)
+                .opacity(contentVisible ? 1 : 0)
+                .offset(y: contentVisible ? 0 : 16)
+
+                Spacer()
             }
-            .netflixButton(.primary)
-            .fullWidth()
-            .padding(.horizontal, NetflixTheme.Spacing.md)
-            .disabled(isLoading)
+        }
+        .onAppear {
+            withAnimation(NetflixAnimation.spring.delay(0.15)) {
+                contentVisible = true
+            }
+        }
+    }
+
+    // MARK: - Nav bar
+    private var navBar: some View {
+        HStack(spacing: NetflixTheme.Spacing.md) {
+            Button {} label: {
+                Image(systemName: "chevron.left")
+                    .font(NetflixTheme.Typography.medium(18))
+                    .foregroundColor(NetflixTheme.Colors.textPrimary)
+            }
+
+            Image("Netflix_Logo")
+                .resizable()
+                .scaledToFit()
+                .frame(height: 28)
 
             Spacer()
-
-            // Footer
-            HStack(spacing: 4) {
-                Text("New to Netflix?")
-                    .netflixText(.body)
-                Button("Sign up now.") {}
-                    .foregroundColor(NetflixTheme.Colors.textPrimary)
-                    .font(NetflixTheme.Typography.body)
-            }
-            .padding(.bottom, NetflixTheme.Spacing.xl)
         }
-        .netflixScreen()
-        .onAppear {
-            withAnimation(NetflixAnimation.spring.delay(0.2)) {
-                fieldsVisible = true
-            }
-        }
+        .padding(.horizontal, NetflixTheme.Spacing.md)
+        .frame(height: 52)
     }
 
-    private var passwordField: some View {
-        HStack {
-            Group {
-                if showPassword {
-                    TextField("", text: $password,
-                              prompt: Text("Password").foregroundColor(NetflixTheme.Colors.textTertiary))
+    // MARK: - Email field
+    private var emailField: some View {
+        FloatingLabelTextField(
+            placeholder: "Email address or mobile number",
+            text: $email,
+            keyboardType: .emailAddress
+        )
+    }
+
+    // MARK: - Continue button
+    private var continueButton: some View {
+        Button {
+            isLoading = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                isLoading = false
+                router.signIn()
+            }
+        } label: {
+            ZStack {
+                if isLoading {
+                    ProgressView().tint(.white)
                 } else {
-                    SecureField("", text: $password,
-                                prompt: Text("Password").foregroundColor(NetflixTheme.Colors.textTertiary))
+                    Text("Continue")
+                        .font(NetflixTheme.Typography.bold(18))
+                        .foregroundColor(.white)
                 }
             }
-            .foregroundColor(NetflixTheme.Colors.textPrimary)
-            .font(NetflixTheme.Typography.body)
-
-            Button {
-                showPassword.toggle()
-            } label: {
-                Image(systemName: showPassword ? "eye.slash" : "eye")
-                    .foregroundColor(NetflixTheme.Colors.textSecondary)
-            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, NetflixTheme.Spacing.md)
+            .background(NetflixTheme.Colors.netflixRed)
+            .cornerRadius(4)
         }
-        .padding(NetflixTheme.Spacing.md)
-        .background(NetflixTheme.Colors.cardBg)
-        .cornerRadius(4)
-        .padding(.horizontal, NetflixTheme.Spacing.md)
+        .disabled(isLoading)
     }
 
-    private func netflixTextField(_ placeholder: String, text: Binding<String>) -> some View {
-        TextField("", text: text,
-                  prompt: Text(placeholder).foregroundColor(NetflixTheme.Colors.textTertiary))
-            .foregroundColor(NetflixTheme.Colors.textPrimary)
-            .font(NetflixTheme.Typography.body)
-            .padding(NetflixTheme.Spacing.md)
-            .background(NetflixTheme.Colors.cardBg)
-            .cornerRadius(4)
-            .padding(.horizontal, NetflixTheme.Spacing.md)
+    // MARK: - Get help
+    private var getHelpRow: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Button {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    getHelpExpanded.toggle()
+                }
+            } label: {
+                HStack(spacing: 6) {
+                    Text("Get help")
+                        .font(NetflixTheme.Typography.medium(15))
+                        .foregroundColor(NetflixTheme.Colors.textPrimary)
+                    Image(systemName: getHelpExpanded ? "chevron.up" : "chevron.down")
+                        .font(NetflixTheme.Typography.medium(12))
+                        .foregroundColor(NetflixTheme.Colors.textPrimary)
+                }
+            }
+            .buttonStyle(.plain)
+
+            if getHelpExpanded {
+                VStack(alignment: .leading, spacing: NetflixTheme.Spacing.sm) {
+                    helpLink("Forgot email address or mobile number?", url: "https://www.netflix.com/th-en/loginhelp?fromApp=true")
+                    helpLink("Learn more about sign-in", url: "https://help.netflix.com/en/node/311830241325668?fromApp=true")
+                }
+                .padding(.top, NetflixTheme.Spacing.md)
+            }
+        }
+        .padding(.top, NetflixTheme.Spacing.xl)
+    }
+
+    private func helpLink(_ title: String, url: String) -> some View {
+        Button {
+            if let u = URL(string: url) {
+                UIApplication.shared.open(u)
+            }
+        } label: {
+            Text(title)
+                .font(NetflixTheme.Typography.regular(14))
+                .foregroundColor(NetflixTheme.Colors.textPrimary)
+                .underline()
+        }
+        .buttonStyle(.plain)
+    }
+
+    // MARK: - reCAPTCHA footer
+    private var captchaFooter: some View {
+        (
+            Text("This page is protected by Google reCAPTCHA to ensure you're not a bot. ")
+                .foregroundColor(NetflixTheme.Colors.textSecondary)
+            + Text("Learn more")
+                .foregroundColor(NetflixTheme.Colors.textPrimary)
+                .underline()
+        )
+        .font(NetflixTheme.Typography.regular(13))
+        .padding(.top, NetflixTheme.Spacing.xl)
     }
 }
 
 #Preview {
     SignInView().environmentObject(AppRouter())
 }
-

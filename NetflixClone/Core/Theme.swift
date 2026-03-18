@@ -43,15 +43,36 @@ enum NetflixTheme {
 
     // MARK: Typography
     enum Typography {
-        static let heroTitle   = Font.system(size: 30, weight: .bold)
-        static let rowHeader   = Font.system(size: 16, weight: .medium)
-        static let cardTitle   = Font.system(size: 12, weight: .medium)
-        static let body        = Font.system(size: 14, weight: .regular)
-        static let caption     = Font.system(size: 11, weight: .regular)
-        static let buttonText  = Font.system(size: 15, weight: .medium)
-        static let navItem     = Font.system(size: 13, weight: .regular)
-        static let detailTitle = Font.system(size: 22, weight: .bold)
-        static let matchPct    = Font.system(size: 11, weight: .bold)
+        // MARK: Logo — Bebas Neue (used only for Netflix wordmark)
+        static let netflixLogo = Font.custom("BebasNeue", size: 36)
+        static func netflixLogoSize(_ size: CGFloat) -> Font {
+            Font.custom("BebasNeue", size: size)
+        }
+
+        // MARK: Netflix Sans helpers
+        static func thin(_ size: CGFloat)         -> Font { .custom("NetflixSans-Thin",        size: size) }
+        static func thinItalic(_ size: CGFloat)   -> Font { .custom("NetflixSans-ThinItalic",  size: size) }
+        static func light(_ size: CGFloat)        -> Font { .custom("NetflixSans-Light",       size: size) }
+        static func lightItalic(_ size: CGFloat)  -> Font { .custom("NetflixSans-LightItalic", size: size) }
+        static func regular(_ size: CGFloat)      -> Font { .custom("NetflixSans-Regular",     size: size) }
+        static func italic(_ size: CGFloat)       -> Font { .custom("Netflix Sans Italic",     size: size) }
+        static func medium(_ size: CGFloat)       -> Font { .custom("NetflixSans-Medium",      size: size) }
+        static func mediumItalic(_ size: CGFloat) -> Font { .custom("NetflixSans-MediumItalic",size: size) }
+        static func bold(_ size: CGFloat)         -> Font { .custom("NetflixSans-Bold",        size: size) }
+        static func boldItalic(_ size: CGFloat)   -> Font { .custom("NetflixSans-BoldItalic",  size: size) }
+        static func black(_ size: CGFloat)        -> Font { .custom("NetflixSans-Black",       size: size) }
+        static func blackItalic(_ size: CGFloat)  -> Font { .custom("NetflixSans-BlackItalic", size: size) }
+
+        // MARK: Semantic tokens
+        static let heroTitle   = Font.custom("NetflixSans-Bold",   size: 30)
+        static let rowHeader   = Font.custom("NetflixSans-Medium", size: 16)
+        static let cardTitle   = Font.custom("NetflixSans-Medium", size: 12)
+        static let body        = Font.custom("NetflixSans-Regular",size: 14)
+        static let caption     = Font.custom("NetflixSans-Regular",size: 11)
+        static let buttonText  = Font.custom("NetflixSans-Medium", size: 15)
+        static let navItem     = Font.custom("NetflixSans-Regular",size: 13)
+        static let detailTitle = Font.custom("NetflixSans-Bold",   size: 22)
+        static let matchPct    = Font.custom("NetflixSans-Bold",   size: 11)
     }
 }
 
