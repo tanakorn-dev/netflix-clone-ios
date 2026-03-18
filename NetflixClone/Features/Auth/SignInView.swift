@@ -7,6 +7,9 @@ struct AuthView: View {
         if router.isSignedIn {
             ProfilePickerView()
                 .transition(.netflixFade)
+        } else if !router.pendingEmail.isEmpty {
+            OTPView()
+                .transition(.netflixFade)
         } else {
             SignInView()
                 .transition(.netflixFade)
@@ -17,6 +20,7 @@ struct AuthView: View {
 struct SignInView: View {
     @EnvironmentObject var router: AppRouter
     @State private var email = ""
+    @State private var emailError = false
     @State private var isLoading = false
     @State private var contentVisible = false
     @State private var getHelpExpanded = false
@@ -46,7 +50,19 @@ struct SignInView: View {
                         .padding(.bottom, 40)
 
                     VStack(spacing: NetflixTheme.Spacing.md) {
-                        emailField
+                        VStack(alignment: .leading, spacing: NetflixTheme.Spacing.xs) {
+                            emailField
+                            if emailError {
+                                HStack(spacing: 6) {
+                                    Image(systemName: "xmark.circle")
+                                        .font(.system(size: 13))
+                                        .foregroundColor(NetflixTheme.Colors.netflixRed)
+                                    Text("Please enter a valid email address or phone number")
+                                        .font(NetflixTheme.Typography.regular(13))
+                                        .foregroundColor(NetflixTheme.Colors.netflixRed)
+                                }
+                            }
+                        }
                         continueButton
                     }
 
@@ -59,6 +75,11 @@ struct SignInView: View {
                 .offset(y: contentVisible ? 0 : 16)
 
                 Spacer()
+            }
+
+            // Full-screen loading overlay — border spinner center
+            if isLoading {
+                NetflixSpinner(color: NetflixTheme.Colors.netflixRed, size: 48, lineWidth: 5)
             }
         }
         .onAppear {
@@ -93,32 +114,35 @@ struct SignInView: View {
         FloatingLabelTextField(
             placeholder: "Email address or mobile number",
             text: $email,
-            keyboardType: .emailAddress
+            keyboardType: .emailAddress,
+            hasError: $emailError
         )
     }
 
     // MARK: - Continue button
     private var continueButton: some View {
         Button {
-            isLoading = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                isLoading = false
-                router.signIn()
+            guard !email.trimmingCharacters(in: .whitespaces).isEmpty else {
+                emailError = true
+                return
             }
-        } label: {
-            ZStack {
-                if isLoading {
-                    ProgressView().tint(.white)
-                } else {
-                    Text("Continue")
-                        .font(NetflixTheme.Typography.bold(18))
-                        .foregroundColor(.white)
+            isLoading = true
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+            Task {
+                try? await Task.sleep(for: .seconds(0.8))
+                await MainActor.run {
+                    isLoading = false
+                    router.requestOTP(email: email)
                 }
             }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, NetflixTheme.Spacing.md)
-            .background(NetflixTheme.Colors.netflixRed)
-            .cornerRadius(4)
+        } label: {
+            Text("Continue")
+                .font(NetflixTheme.Typography.bold(18))
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, NetflixTheme.Spacing.md)
+                .background(NetflixTheme.Colors.netflixRed)
+                .cornerRadius(4)
         }
         .disabled(isLoading)
     }

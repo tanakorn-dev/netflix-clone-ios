@@ -55,6 +55,8 @@
 		B738E53F2F69D22B00E93B53 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B738E5312F69D22B00E93B53 /* MainTabView.swift */; };
 		B738E5402F69D22B00E93B53 /* MovieDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B738E52C2F69D22B00E93B53 /* MovieDetailView.swift */; };
 		B738E5412F69D22B00E93B53 /* PlaceholderViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = B738E5322F69D22B00E93B53 /* PlaceholderViews.swift */; };
+		F6CD39782F6AB3D900DA763C /* NetflixSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6CD39772F6AB3D900DA763C /* NetflixSpinner.swift */; };
+		F6CD397A2F6ABB2300DA763C /* OTPView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6CD39792F6ABB2300DA763C /* OTPView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -106,6 +108,8 @@
 		B738E5342F69D22B00E93B53 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
 		B738E5362F69D22B00E93B53 /* ProfilePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePickerView.swift; sourceTree = "<group>"; };
 		B738E5382F69D22B00E93B53 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		F6CD39772F6AB3D900DA763C /* NetflixSpinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixSpinner.swift; sourceTree = "<group>"; };
+		F6CD39792F6ABB2300DA763C /* OTPView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OTPView.swift; sourceTree = "<group>"; };
 		PROD /* NetflixClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NetflixClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -115,7 +119,6 @@
 			children = (
 				B729F5E42F6A653D00541881 /* CachedAsyncImage.swift */,
 				B738E4FA2F69D0D100E93B53 /* Color+Extensions.swift */,
-				B729F6022F6A892E00541881 /* FloatingLabelTextField.swift */,
 				B738E4FB2F69D0D100E93B53 /* String+Extensions.swift */,
 				B738E4FC2F69D0D100E93B53 /* View+Extensions.swift */,
 			);
@@ -191,6 +194,8 @@
 				B738E5152F69D17400E93B53 /* HeroBanner */,
 				B738E5172F69D17400E93B53 /* Navigation */,
 				B738E5182F69D17400E93B53 /* Player */,
+				F6CD39772F6AB3D900DA763C /* NetflixSpinner.swift */,
+				B729F6022F6A892E00541881 /* FloatingLabelTextField.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -198,6 +203,7 @@
 		B738E5292F69D1FB00E93B53 /* Auth */ = {
 			isa = PBXGroup;
 			children = (
+				F6CD39792F6ABB2300DA763C /* OTPView.swift */,
 				B738E5272F69D1FB00E93B53 /* SignInView.swift */,
 				B738E5282F69D1FB00E93B53 /* SplashView.swift */,
 			);
@@ -436,10 +442,12 @@
 				B738E5072F69D0D100E93B53 /* DesignSystemPreview.swift in Sources */,
 				B738E5082F69D0D100E93B53 /* NetflixCardModifier.swift in Sources */,
 				B738E51A2F69D17400E93B53 /* MovieCard.swift in Sources */,
+				F6CD397A2F6ABB2300DA763C /* OTPView.swift in Sources */,
 				B738E51B2F69D17400E93B53 /* BadgeLabel.swift in Sources */,
 				B738E51C2F69D17400E93B53 /* HeroBanner.swift in Sources */,
 				B738E53A2F69D22B00E93B53 /* VideoPlayerView.swift in Sources */,
 				B738E53B2F69D22B00E93B53 /* SearchView.swift in Sources */,
+				F6CD39782F6AB3D900DA763C /* NetflixSpinner.swift in Sources */,
 				B738E53C2F69D22B00E93B53 /* HomeView.swift in Sources */,
 				B738E53D2F69D22B00E93B53 /* DownloadsView.swift in Sources */,
 				B738E53E2F69D22B00E93B53 /* ProfilePickerView.swift in Sources */,
@@ -522,6 +530,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"NetflixClone/Preview Content\"";
+				DEVELOPMENT_TEAM = 5Q66Q36S5W;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -553,6 +562,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"NetflixClone/Preview Content\"";
+				DEVELOPMENT_TEAM = 5Q66Q36S5W;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

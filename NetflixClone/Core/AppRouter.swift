@@ -14,6 +14,7 @@ final class AppRouter: ObservableObject {
 
     // MARK: Auth flow
     @Published var isSignedIn: Bool = false
+    @Published var pendingEmail: String = ""
     @Published var selectedProfile: Profile? = nil
 
     // MARK: Detail sheet
@@ -34,6 +35,17 @@ final class AppRouter: ObservableObject {
     @Published var selectedTab: Int = 0
 
     // MARK: Actions
+    func requestOTP(email: String) {
+        withAnimation(NetflixAnimation.slowFade) { pendingEmail = email }
+    }
+
+    func verifyOTP() {
+        withAnimation(NetflixAnimation.slowFade) {
+            pendingEmail = ""
+            isSignedIn = true
+        }
+    }
+
     func signIn() {
         withAnimation(NetflixAnimation.slowFade) { isSignedIn = true }
     }
