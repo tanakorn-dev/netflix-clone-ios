@@ -13,6 +13,7 @@
 		A004 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B004 /* Profile.swift */; };
 		A005 /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B005 /* MockData.swift */; };
 		A012 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B012 /* Assets.xcassets */; };
+		B729F5E52F6A653D00541881 /* CachedAsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B729F5E42F6A653D00541881 /* CachedAsyncImage.swift */; };
 		B738E5022F69D0D100E93B53 /* NetflixBackgroundModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B738E4FE2F69D0D100E93B53 /* NetflixBackgroundModifier.swift */; };
 		B738E5032F69D0D100E93B53 /* AnimationConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B738E4F72F69D0D100E93B53 /* AnimationConstants.swift */; };
 		B738E5042F69D0D100E93B53 /* View+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B738E4FC2F69D0D100E93B53 /* View+Extensions.swift */; };
@@ -49,6 +50,7 @@
 		B004 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		B005 /* MockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
 		B012 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B729F5E42F6A653D00541881 /* CachedAsyncImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedAsyncImage.swift; sourceTree = "<group>"; };
 		B738E4F72F69D0D100E93B53 /* AnimationConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationConstants.swift; sourceTree = "<group>"; };
 		B738E4F82F69D0D100E93B53 /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
 		B738E4F92F69D0D100E93B53 /* DesignSystemPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystemPreview.swift; sourceTree = "<group>"; };
@@ -83,6 +85,7 @@
 		B738E4FD2F69D0D100E93B53 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				B729F5E42F6A653D00541881 /* CachedAsyncImage.swift */,
 				B738E4FA2F69D0D100E93B53 /* Color+Extensions.swift */,
 				B738E4FB2F69D0D100E93B53 /* String+Extensions.swift */,
 				B738E4FC2F69D0D100E93B53 /* View+Extensions.swift */,
@@ -392,6 +395,7 @@
 				B738E51F2F69D17400E93B53 /* TopNavBar.swift in Sources */,
 				B738E5202F69D17400E93B53 /* NetflixButton.swift in Sources */,
 				B738E5212F69D17400E93B53 /* PosterImage.swift in Sources */,
+				B729F5E52F6A653D00541881 /* CachedAsyncImage.swift in Sources */,
 				B738E5092F69D0D100E93B53 /* Color+Extensions.swift in Sources */,
 				B738E50A2F69D0D100E93B53 /* NetflixTextModifier.swift in Sources */,
 				B738E52A2F69D1FB00E93B53 /* SplashView.swift in Sources */,

@@ -68,18 +68,10 @@ struct ProfilePickerView: View {
 
             if !backdropMovies.isEmpty {
                 let movie = backdropMovies[backdropIndex]
-                AsyncImage(url: URL(string: movie.backdropURL)) { phase in
-                    switch phase {
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .scaledToFill()
-                    case .failure, .empty:
-                        Color(hex: "1a1a2e")
-                    @unknown default:
-                        Color(hex: "1a1a2e")
-                    }
-                }
+                CachedAsyncImage(
+                    url: movie.backdropURL,
+                    contentMode: .fill
+                )
                 .opacity(backdropOpacity)
                 .animation(.easeInOut(duration: 0.8), value: backdropOpacity)
             }
