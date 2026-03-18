@@ -4,7 +4,8 @@ struct ProfilePickerView: View {
     @EnvironmentObject var router: AppRouter
     @State private var avatarsVisible = false
     @State private var backdropIndex: Int = 0
-    @State private var backdropOpacity: Double = 1.0
+    @State private var backdropNextIndex: Int = 1
+    @State private var backdropCrossfadeOpacity: Double = 0.0
 
     private let backdropMovies = MockData.backdropMovies
     private let backdropTimer = Timer.publish(every: 8, on: .main, in: .common).autoconnect()
@@ -54,6 +55,7 @@ struct ProfilePickerView: View {
                 withAnimation(NetflixAnimation.spring) {
                     avatarsVisible = true
                 }
+                backdropNextIndex = (backdropMovies.count > 1) ? 1 : 0
             }
             .onReceive(backdropTimer) { _ in
                 cycleBackdrop()
@@ -67,13 +69,12 @@ struct ProfilePickerView: View {
             Color(hex: "1a1a2e")
 
             if !backdropMovies.isEmpty {
-                let movie = backdropMovies[backdropIndex]
-                CachedAsyncImage(
-                    url: movie.backdropURL,
-                    contentMode: .fill
-                )
-                .opacity(backdropOpacity)
-                .animation(.easeInOut(duration: 0.8), value: backdropOpacity)
+                // Current image (underneath)
+                CachedAsyncImage(url: backdropMovies[backdropIndex].backdropURL, contentMode: .fill)
+
+                // Next image (fades in on top)
+                CachedAsyncImage(url: backdropMovies[backdropNextIndex].backdropURL, contentMode: .fill)
+                    .opacity(backdropCrossfadeOpacity)
             }
         }
     }
@@ -81,14 +82,20 @@ struct ProfilePickerView: View {
     // MARK: - Cycle logic
     private func cycleBackdrop() {
         guard backdropMovies.count > 1 else { return }
-        withAnimation(.easeInOut(duration: 0.8)) {
-            backdropOpacity = 0
+
+        // Prepare next image
+        backdropNextIndex = (backdropIndex + 1) % backdropMovies.count
+        backdropCrossfadeOpacity = 0
+
+        // Crossfade next image in over 1.2s
+        withAnimation(.easeInOut(duration: 1.2)) {
+            backdropCrossfadeOpacity = 1.0
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-            backdropIndex = (backdropIndex + 1) % backdropMovies.count
-            withAnimation(.easeInOut(duration: 0.8)) {
-                backdropOpacity = 1
-            }
+
+        // After crossfade completes, promote next → current
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+            backdropIndex = backdropNextIndex
+            backdropCrossfadeOpacity = 0
         }
     }
 
