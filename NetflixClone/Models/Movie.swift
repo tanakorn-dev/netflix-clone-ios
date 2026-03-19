@@ -5,8 +5,9 @@ struct Movie: Identifiable, Hashable {
     let id: UUID
     let title: String
     let description: String
-    let thumbnailURL: String
+    let posterURL: String
     let backdropURL: String
+    let logoURL: String
     let year: Int
     let duration: String
     let matchPercentage: Int
@@ -19,8 +20,9 @@ struct Movie: Identifiable, Hashable {
         id: UUID = UUID(),
         title: String,
         description: String,
-        thumbnailURL: String = "",
+        posterURL: String = "",
         backdropURL: String = "",
+        logoURL: String = "",
         year: Int,
         duration: String,
         matchPercentage: Int,
@@ -32,8 +34,9 @@ struct Movie: Identifiable, Hashable {
         self.id = id
         self.title = title
         self.description = description
-        self.thumbnailURL = thumbnailURL
+        self.posterURL = posterURL
         self.backdropURL = backdropURL
+        self.logoURL = logoURL
         self.year = year
         self.duration = duration
         self.matchPercentage = matchPercentage

@@ -33,7 +33,7 @@ struct MovieCard: View {
         } label: {
             ZStack(alignment: .bottomLeading) {
                 PosterImage(
-                    url: movie.thumbnailURL,
+                    url: movie.posterURL,
                     width: size.width,
                     height: size.height
                 )

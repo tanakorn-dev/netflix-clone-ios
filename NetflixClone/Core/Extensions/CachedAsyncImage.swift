@@ -45,10 +45,11 @@ final class ImageCache {
         // Level 2: disk
         let fileURL = diskPath(for: url)
         guard FileManager.default.fileExists(atPath: fileURL.path),
-              let data = try? Data(contentsOf: fileURL),
-              let image = UIImage(data: data) else {
+              let data = try? Data(contentsOf: fileURL) else {
             return nil
         }
+
+        guard let image = UIImage.decodedWithAlpha(from: data) else { return nil }
 
         // Promote to memory cache
         let cost = Int(image.size.width * image.size.height * 4)
@@ -72,9 +73,9 @@ final class ImageCache {
         // Write disk (background)
         let fileURL = diskPath(for: url)
         Task.detached(priority: .background) {
-            if let data = image.jpegData(compressionQuality: 0.85) {
-                try? data.write(to: fileURL, options: .atomic)
-            }
+            // Use PNG for images that may have alpha, JPEG otherwise
+            let data = image.pngData() ?? image.jpegData(compressionQuality: 0.85)
+            if let data { try? data.write(to: fileURL, options: .atomic) }
         }
     }
 
@@ -91,7 +92,7 @@ final class ImageCache {
         } else {
             filename = String(abs(url.hashValue))
         }
-        return diskCacheDir.appendingPathComponent(filename + ".jpg")
+        return diskCacheDir.appendingPathComponent(filename + ".png")
     }
 
     // MARK: - Evict expired / oversized disk cache
@@ -129,7 +130,37 @@ final class ImageCache {
     }
 }
 
-// MARK: - CachedAsyncImage
+// MARK: - UIImage PNG Alpha Fix
+extension UIImage {
+    /// Force-decodes image data preserving alpha channel using CGImage directly.
+    static func decodedWithAlpha(from data: Data) -> UIImage? {
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil),
+              let cgImage = CGImageSourceCreateImageAtIndex(source, 0, nil) else {
+            return UIImage(data: data)
+        }
+
+        // Create a new CGImage with explicit RGBA color space to preserve alpha
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let bitmapInfo: CGBitmapInfo = [.byteOrder32Big, CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)]
+        guard let context = CGContext(
+            data: nil,
+            width: cgImage.width,
+            height: cgImage.height,
+            bitsPerComponent: 8,
+            bytesPerRow: cgImage.width * 4,
+            space: colorSpace,
+            bitmapInfo: bitmapInfo.rawValue
+        ) else {
+            return UIImage(data: data)
+        }
+
+        context.draw(cgImage, in: CGRect(x: 0, y: 0, width: cgImage.width, height: cgImage.height))
+        guard let decoded = context.makeImage() else { return UIImage(data: data) }
+        return UIImage(cgImage: decoded, scale: UIScreen.main.scale, orientation: .up)
+    }
+}
+
+
 // Drop-in replacement for AsyncImage with automatic 2-level caching.
 //
 // Usage:
@@ -143,6 +174,7 @@ struct CachedAsyncImage: View {
     var width: CGFloat? = nil
     var height: CGFloat? = nil
     var cornerRadius: CGFloat = 0
+    var showFallback: Bool = true
 
     @State private var image: UIImage? = nil
     @State private var isLoading = false
@@ -159,13 +191,13 @@ struct CachedAsyncImage: View {
     var body: some View {
         ZStack {
             if let image {
-                Image(uiImage: image)
+                Image(uiImage: image.withRenderingMode(.alwaysOriginal))
                     .resizable()
                     .aspectRatio(contentMode: contentMode)
                     .frame(width: width, height: height)
                     .clipped()
                     .cornerRadius(cornerRadius)
-            } else {
+            } else if showFallback {
                 fallbackColor
                     .frame(width: width, height: height)
                     .cornerRadius(cornerRadius)
@@ -192,9 +224,10 @@ struct CachedAsyncImage: View {
         Task {
             do {
                 let (data, _) = try await URLSession.shared.data(from: parsedURL)
-                if let downloaded = UIImage(data: data) {
-                    ImageCache.shared.set(downloaded, for: url)
-                    await MainActor.run { image = downloaded }
+
+                if let img = UIImage.decodedWithAlpha(from: data) {
+                    ImageCache.shared.set(img, for: url)
+                    await MainActor.run { image = img }
                 }
             } catch {
                 // silently falls back to placeholder color

@@ -44,6 +44,28 @@ struct ProfilePickerView: View {
                         .frame(height: backdropHeight * 0.55)
                         .offset(y: backdropHeight * 0.45)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+
+                        // Movie logo — at 50% of screen height
+                        if !backdropMovies.isEmpty {
+                            let currentMovie = backdropMovies[backdropIndex]
+                            let nextMovie = backdropMovies[backdropNextIndex]
+
+                            ZStack {
+                                if !currentMovie.logoURL.isEmpty {
+                                    CachedAsyncImage(url: currentMovie.logoURL, contentMode: .fit, showFallback: false)
+                                        .frame(maxWidth: geo.size.width * 0.65)
+                                        .opacity(1 - backdropCrossfadeOpacity)
+                                }
+                                if !nextMovie.logoURL.isEmpty {
+                                    CachedAsyncImage(url: nextMovie.logoURL, contentMode: .fit, showFallback: false)
+                                        .frame(maxWidth: geo.size.width * 0.65)
+                                        .opacity(backdropCrossfadeOpacity)
+                                }
+                            }
+                            .frame(height: 80)
+                            .frame(maxWidth: .infinity)
+                            .position(x: geo.size.width / 2, y: geo.size.height * 0.55)
+                        }
                     }
                 }
                 .ignoresSafeArea()

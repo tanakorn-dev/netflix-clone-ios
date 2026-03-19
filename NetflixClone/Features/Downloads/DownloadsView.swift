@@ -69,7 +69,7 @@ struct DownloadsView: View {
         List {
             ForEach(downloads) { movie in
                 HStack(spacing: NetflixTheme.Spacing.md) {
-                    PosterImage(url: movie.thumbnailURL, width: 80, height: 56)
+                    PosterImage(url: movie.posterURL, width: 80, height: 56)
                     VStack(alignment: .leading, spacing: 4) {
                         Text(movie.title).netflixText(.cardTitle)
                         Text(movie.duration).netflixText(.caption)
