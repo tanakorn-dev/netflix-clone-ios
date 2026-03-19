@@ -16,6 +16,12 @@ struct SplashView: View {
             }
         }
         .netflixScreen()
+        .onAppear {
+            // Skip splash if already signed in
+            if router.isSignedIn {
+                isActive = true
+            }
+        }
     }
 
     private var splashContent: some View {

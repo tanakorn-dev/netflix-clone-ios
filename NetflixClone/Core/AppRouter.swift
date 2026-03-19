@@ -13,7 +13,9 @@ import SwiftUI
 final class AppRouter: ObservableObject {
 
     // MARK: Auth flow
-    @Published var isSignedIn: Bool = false
+    @Published var isSignedIn: Bool = UserDefaults.standard.bool(forKey: "isSignedIn") {
+        didSet { UserDefaults.standard.set(isSignedIn, forKey: "isSignedIn") }
+    }
     @Published var pendingEmail: String = ""
     @Published var selectedProfile: Profile? = nil
 
