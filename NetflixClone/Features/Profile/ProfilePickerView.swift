@@ -7,8 +7,11 @@ struct ProfilePickerView: View {
     @State private var backdropNextIndex: Int = 1
     @State private var backdropCrossfadeOpacity: Double = 0.0
 
-    private let backdropMovies = MockData.backdropMovies
+    private var backdropMovies = MockData.backdropMovies
     private let backdropTimer = Timer.publish(every: 8, on: .main, in: .common).autoconnect()
+
+    // Resolved URLs — fixed at init so randomElement() doesn't change on every render
+    private let resolvedBackdropURLs: [String] = MockData.backdropMovies.map { $0.backdropURL }
 
     var body: some View {
         if router.selectedProfile != nil {
@@ -21,7 +24,7 @@ struct ProfilePickerView: View {
             }
             .onAppear {
                 withAnimation(NetflixAnimation.spring) { avatarsVisible = true }
-                backdropNextIndex = (backdropMovies.count > 1) ? 1 : 0
+                backdropNextIndex = (resolvedBackdropURLs.count > 1) ? 1 : 0
             }
             .onReceive(backdropTimer) { _ in cycleBackdrop() }
         }
@@ -54,8 +57,7 @@ struct ProfilePickerView: View {
                 // Movie logo
                 if !backdropMovies.isEmpty {
                     movieLogoOverlay(geo: geo)
-                }
-            }
+                }            }
         }
         .ignoresSafeArea()
     }
@@ -63,9 +65,9 @@ struct ProfilePickerView: View {
     private var backdropImages: some View {
         ZStack {
             Color(hex: "1a1a2e")
-            if !backdropMovies.isEmpty {
-                CachedAsyncImage(url: backdropMovies[backdropIndex].backdropURL, contentMode: .fill)
-                CachedAsyncImage(url: backdropMovies[backdropNextIndex].backdropURL, contentMode: .fill)
+            if !resolvedBackdropURLs.isEmpty {
+                CachedAsyncImage(url: resolvedBackdropURLs[backdropIndex], contentMode: .fill)
+                CachedAsyncImage(url: resolvedBackdropURLs[backdropNextIndex], contentMode: .fill)
                     .opacity(backdropCrossfadeOpacity)
             }
         }
@@ -93,8 +95,8 @@ struct ProfilePickerView: View {
 
     // MARK: - Backdrop cycle
     private func cycleBackdrop() {
-        guard backdropMovies.count > 1 else { return }
-        backdropNextIndex = (backdropIndex + 1) % backdropMovies.count
+        guard resolvedBackdropURLs.count > 1 else { return }
+        backdropNextIndex = (backdropIndex + 1) % resolvedBackdropURLs.count
         backdropCrossfadeOpacity = 0
         withAnimation(.easeInOut(duration: 1.2)) { backdropCrossfadeOpacity = 1.0 }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {

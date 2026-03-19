@@ -6,7 +6,7 @@ struct Movie: Identifiable, Hashable {
     let title: String
     let description: String
     let posterURL: String
-    let backdropURL: String
+    let backdropURLs: [String]
     let logoURL: String
     let year: Int
     let duration: String
@@ -16,12 +16,15 @@ struct Movie: Identifiable, Hashable {
     let isNetflixOriginal: Bool
     let rating: String
 
+    /// Returns a random backdrop URL from the array, or empty string if none available
+    var backdropURL: String { backdropURLs.randomElement() ?? "" }
+
     init(
         id: UUID = UUID(),
         title: String,
         description: String,
         posterURL: String = "",
-        backdropURL: String = "",
+        backdropURLs: [String] = [],
         logoURL: String = "",
         year: Int,
         duration: String,
@@ -35,7 +38,7 @@ struct Movie: Identifiable, Hashable {
         self.title = title
         self.description = description
         self.posterURL = posterURL
-        self.backdropURL = backdropURL
+        self.backdropURLs = backdropURLs
         self.logoURL = logoURL
         self.year = year
         self.duration = duration

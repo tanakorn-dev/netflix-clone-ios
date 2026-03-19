@@ -72,7 +72,7 @@ enum MockData {
         Movie(title: "Project Hail Mary",
               description: "Science teacher Ryland Grace wakes up on a spaceship light years from home with no recollection of who he is or how he got there. As his memory returns, he begins to uncover his mission: solve the riddle of the mysterious substance causing the sun to die out. He must call on his scientific knowledge and unorthodox ideas to save everything on Earth from extinction… but an unexpected friendship means he may not have to do it alone.",
               posterURL: "https://image.tmdb.org/t/p/w600_and_h900_face/cCx1m530ph5FmtabVVUpUchEmhe.jpg",
-              backdropURL: "https://image.tmdb.org/t/p/original/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg",
+              backdropURLs: ["https://image.tmdb.org/t/p/original/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg"],
               logoURL: "https://image.tmdb.org/t/p/original/jvqIELbZctv3Jqtcc7Ic5of8vY7.png",
               year: 2026, duration: "2h 37m",
               matchPercentage: 97,
@@ -83,7 +83,7 @@ enum MockData {
         Movie(title: "One Battle After Another",
               description: "Washed-up revolutionary Bob exists in a state of stoned paranoia, surviving off-grid with his spirited, self-reliant daughter, Willa. When his evil nemesis resurfaces after 16 years and she goes missing, the former radical scrambles to find her, father and daughter both battling the consequences of his past.",
               posterURL: "https://image.tmdb.org/t/p/w600_and_h900_face/lbBWwxBht4JFP5PsuJ5onpMqugW.jpg",
-              backdropURL: "https://image.tmdb.org/t/p/original/hiazLNa1UXuX35OTnMQRKOx3eTk.jpg",
+              backdropURLs: ["https://image.tmdb.org/t/p/original/hiazLNa1UXuX35OTnMQRKOx3eTk.jpg"],
               logoURL: "https://image.tmdb.org/t/p/original/nuAwSIpWScRvVGBBSqXKsYEUdtp.png",
               year: 2025, duration: "2h 42m",
               matchPercentage: 89,
@@ -94,7 +94,7 @@ enum MockData {
         Movie(title: "Zootopia 2",
               description: "After cracking the biggest case in Zootopia's history, rookie cops Judy Hopps and Nick Wilde find themselves on the twisting trail of a great mystery when Gary De'Snake arrives and turns the animal metropolis upside down. To crack the case, Judy and Nick must go undercover to unexpected new parts of town, where their growing partnership is tested like never before.",
               posterURL: "https://image.tmdb.org/t/p/w600_and_h900_face/oJ7g2CifqpStmoYQyaLQgEU32qO.jpg",
-              backdropURL: "https://image.tmdb.org/t/p/original/hVt4zQPfFc5oT9HCxPwKAMbAmIM.jpg",
+              backdropURLs: ["https://image.tmdb.org/t/p/original/hVt4zQPfFc5oT9HCxPwKAMbAmIM.jpg"],
               logoURL: "https://image.tmdb.org/t/p/original/b2vTbsREFUNlUTkTsbLYGJBUlZH.png",
               year: 2025, duration: "1h 48m",
               matchPercentage: 93,
@@ -105,7 +105,7 @@ enum MockData {
         Movie(title: "Hoppers",
               description: "Scientists have discovered how to 'hop' human consciousness into lifelike robotic animals, allowing people to communicate with animals as animals. Animal lover Mabel seizes an opportunity to use the technology, uncovering mysteries within the animal world beyond anything she could have imagined.",
               posterURL: "https://image.tmdb.org/t/p/w600_and_h900_face/xjtWQ2CL1mpmMNwuU5HeS4Iuwuu.jpg",
-              backdropURL: "https://image.tmdb.org/t/p/original/x91763uieHs7u0TbJalHQDECAGj.jpg",
+              backdropURLs: ["https://image.tmdb.org/t/p/original/x91763uieHs7u0TbJalHQDECAGj.jpg"],
               logoURL: "https://image.tmdb.org/t/p/original/qYuy5b3oKfhePVe4MNXJPTTTahW.png",
               year: 2026, duration: "1h 45m",
               matchPercentage: 91,
@@ -115,7 +115,7 @@ enum MockData {
     ]
 
     // MARK: - Backdrop movies (used in ProfilePickerView cycling backdrop)
-    static let backdropMovies: [Movie] = movies.filter { !$0.backdropURL.isEmpty }
+    static let backdropMovies: [Movie] = movies.filter { !$0.backdropURLs.isEmpty }
 
     // MARK: - Content Rows
     static let homeRows: [ContentRow] = [
